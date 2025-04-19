@@ -35,27 +35,6 @@ const AboutUs = () => {
                 </p>
             </div>
 
-            {/* Current Scopes Section */}
-            <div className="mb-10">
-                <h2 className="text-2xl font-bold mb-4 text-gray-800">Current Scopes of the Project</h2>
-                <ul className="list-disc text-lg text-gray-700 max-w-3xl">
-                    <li>Manage buses, drivers, stops, and routes through a user-friendly dashboard.</li>
-                    <li>View, add, update, and delete entries for all entities.</li>
-                    <li>Track bus schedules and routes efficiently.</li>
-                    <li>Provide detailed information about drivers and conductors.</li>
-                </ul>
-            </div>
-
-            {/* Future Scopes Section */}
-            <div className="mb-10">
-                <h2 className="text-2xl font-bold mb-4 text-gray-800">Future Scopes of the Project</h2>
-                <ul className="list-disc text-lg text-gray-700 max-w-3xl">
-                    <li>Integrate real-time GPS tracking for buses.</li>
-                    <li>Provide a mobile application for passengers to track buses in real-time.</li>
-                    <li>Implement advanced analytics for route optimization.</li>
-                    <li>Introduce automated notifications for schedule changes or delays.</li>
-                </ul>
-            </div>
         </div>
     );
 };

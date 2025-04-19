@@ -8,13 +8,23 @@ import { logo, menu, close } from "../assets";
 const Navbar = () => {
     const [active, setActive] = useState("");
     const [toggle, setToggle] = useState(false);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(
+        localStorage.getItem("isAuthenticated") === "true"
+    );
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Check if the user is authenticated
-        const authStatus = localStorage.getItem("isAuthenticated") === "true";
-        setIsAuthenticated(authStatus);
+        // Listen for changes in localStorage to update authentication state
+        const handleStorageChange = () => {
+            const authStatus = localStorage.getItem("isAuthenticated") === "true";
+            setIsAuthenticated(authStatus);
+        };
+
+        window.addEventListener("storage", handleStorageChange);
+
+        return () => {
+            window.removeEventListener("storage", handleStorageChange);
+        };
     }, []);
 
     const handleLogout = () => {
@@ -29,19 +39,22 @@ const Navbar = () => {
             className={`${styles.paddingX} w-full flex items-center py-5 fixed top-0 z-20`}
         >
             <div className="w-full flex justify-between items-center max-w-7xl mx-auto">
-                <Link
-                    to="/"
-                    className="flex items-center gap-2"
-                    onClick={() => {
-                        setActive("");
-                        window.scrollTo(0, 0);
-                    }}
-                >
-                    <img src={logo} alt="logo" className="w-10 h-10 border-r-2 rounded-full" />
-                    <p className="text-black text-[20px] font-bold cursor-pointer flex">
-                        <span className="sm:block hidden text-black">Where is my BUS?</span>
-                    </p>
-                </Link>
+                {/* Center-align the logo and text */}
+                <div className="flex items-center gap-2 justify-center">
+                    <Link
+                        to="/"
+                        className="flex items-center gap-2"
+                        onClick={() => {
+                            setActive("");
+                            window.scrollTo(0, 0);
+                        }}
+                    >
+                        <img src={logo} alt="logo" className="w-10 h-10 border-r-2 rounded-full" />
+                        <p className="text-black text-[20px] font-bold cursor-pointer flex">
+                            <span className="sm:block hidden text-black">Where is my BUS?</span>
+                        </p>
+                    </Link>
+                </div>
 
                 <ul className="list-none hidden sm:flex flex-row gap-10">
                     {navLinks.map((nav) => (
