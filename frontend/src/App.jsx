@@ -27,6 +27,8 @@ import {
 import Controls from './components/Controls';
 import Help from './components/Help';
 import AboutUs from './components/AboutUs';
+import Login from './components/Login';
+import PrivateRoute from './components/PrivateRoute';
 
 const App = () => {
   return (
@@ -34,8 +36,8 @@ const App = () => {
       <div className="relative z-0">
         <Navbar />
         <Routes>
-          {/* Hero Page (Dashboard)  */}
-          <Route path="/" element={<Hero />} />
+          {/* Public Routes  */}
+          <Route path="/login" element={<Login />} />
 
           {/* Controls Page  */}
           <Route path="/controls" element={<Controls />} />
@@ -46,32 +48,37 @@ const App = () => {
           {/* About Us Page  */}
           <Route path="/about-us" element={<AboutUs />} />
 
+          {/* Private Routes  */}
+
+          {/* Hero Page (Dashboard)  */}
+          <Route path="/" element={<Hero />} />
+
           {/* Manage Buses  */}
-          <Route path="/manage-bus" element={<ManageBuses />} />
-          <Route path="/manage-bus/view" element={<ViewBus />} />
-          <Route path="/manage-bus/add" element={<AddBus />} />
-          <Route path="/manage-bus/update" element={<UpdateBus />} />
-          <Route path="/manage-bus/delete" element={<DeleteBus />} />
+          <Route path="/manage-bus" element={<PrivateRoute> <ManageBuses /> </PrivateRoute>} />
+          <Route path="/manage-bus/view" element={<PrivateRoute> <ViewBus /> </PrivateRoute>} />
+          <Route path="/manage-bus/add" element={<PrivateRoute> <AddBus /> </PrivateRoute>} />
+          <Route path="/manage-bus/update" element={<PrivateRoute> <UpdateBus /> </PrivateRoute>} />
+          <Route path="/manage-bus/delete" element={<PrivateRoute> <DeleteBus /> </PrivateRoute>} />
 
           {/* Manage Drivers  */}
-          <Route path="/manage-driver" element={<ManageDrivers />} />
-          <Route path="/manage-driver/view" element={<ViewDriver />} />
-          <Route path="/manage-driver/add" element={<AddDriver />} />
-          <Route path="/manage-driver/update" element={<UpdateDriver />} />
-          <Route path="/manage-driver/delete" element={<DeleteDriver />} />
+          <Route path="/manage-driver" element={<PrivateRoute> <ManageDrivers /> </PrivateRoute>} />
+          <Route path="/manage-driver/view" element={<PrivateRoute> <ViewDriver /> </PrivateRoute>} />
+          <Route path="/manage-driver/add" element={<PrivateRoute> <AddDriver /> </PrivateRoute>} />
+          <Route path="/manage-driver/update" element={<PrivateRoute> <UpdateDriver /> </PrivateRoute>} />
+          <Route path="/manage-driver/delete" element={<PrivateRoute> <DeleteDriver /> </PrivateRoute>} />
 
           {/* Manage Stops  */}
-          <Route path="/manage-stops" element={<ManageStops />} />
-          <Route path="/manage-stops/view" element={<ViewStops />} />
-          <Route path="/manage-stops/add" element={<AddStops />} />
-          <Route path="/manage-stops/delete" element={<DeleteStops />} />
+          <Route path="/manage-stops" element={<PrivateRoute> <ManageStops /> </PrivateRoute>} />
+          <Route path="/manage-stops/view" element={<PrivateRoute> <ViewStops /> </PrivateRoute>} />
+          <Route path="/manage-stops/add" element={<PrivateRoute> <AddStops /> </PrivateRoute>} />
+          <Route path="/manage-stops/delete" element={<PrivateRoute> <DeleteStops /> </PrivateRoute>} />
 
           {/* Manage Routes  */}
-          <Route path="/manage-route" element={<ManageRoutes />} />
-          <Route path="/manage-route/view" element={<ViewRoute />} />
-          <Route path="/manage-route/add" element={<AddRoute />} />
-          <Route path="/manage-route/update" element={<UpdateRoute />} />
-          <Route path="/manage-route/delete" element={<DeleteRoute />} />
+          <Route path="/manage-route" element={<PrivateRoute> <ManageRoutes /> </PrivateRoute>} />
+          <Route path="/manage-route/view" element={<PrivateRoute> <ViewRoute /> </PrivateRoute>} />
+          <Route path="/manage-route/add" element={<PrivateRoute> <AddRoute /> </PrivateRoute>} />
+          <Route path="/manage-route/update" element={<PrivateRoute> <UpdateRoute /> </PrivateRoute>} />
+          <Route path="/manage-route/delete" element={<PrivateRoute> <DeleteRoute /> </PrivateRoute>} />
         </Routes>
       </div>
     </BrowserRouter>
