@@ -1,8 +1,8 @@
-import { motion } from 'framer-motion';
 import { styles } from '../styles';
 import { BusCanvas } from './canvas';
 import Cards from './Cards';
 import { operations } from '../constants';
+import Chatbot from './Chatbot'; // Import the Chatbot component
 
 const Hero = () => {
     return (
@@ -20,6 +20,9 @@ const Hero = () => {
             </div>
             <div className='flex flex-col w-full md:w-1/2 mt-20 md:mt-0 md:ml-16 px-4 md:px-0 md:items-center'>
                 <Cards actions={operations} />
+                <div className="">
+                    <Chatbot /> {/* Include the Chatbot component */}
+                </div>
             </div>
         </section>
     )
