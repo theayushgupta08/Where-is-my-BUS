@@ -30,6 +30,10 @@ PORT=5173
 ```
 Replace DBURL with your MongoDB connection string if you're using a remote database.
 
+Create a .env file in the frontend/ directory with the following variables:
+```bash
+VITE_API_URL=<YOUR GEMINI API URI>
+```
 
 ### 3. Install Dependencies
 Backend
