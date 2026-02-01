@@ -32,4 +32,4 @@ const ChatForm = ({ chatHistory, setChatHistory, generateBotResponse }) => {
     )
 }
 
-export default ChatForm
+export default ChatForm;
