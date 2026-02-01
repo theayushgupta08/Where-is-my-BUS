@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../axiosInstance';
+import Breadcrumb from '../Breadcrumb';
 
 const DeleteDriver = () => {
     const [userId, setuserId] = useState('');
@@ -12,7 +13,7 @@ const DeleteDriver = () => {
                 alert('Please enter a valid User ID');
                 return;
             }
-            const response = await axios.get(`/api/drivers/${userId}`);
+            const response = await axiosInstance.get(`/drivers/${userId}`);
             setdriverDetails(response.data.data);
             setconfirmDelete(true);
         } catch (error) {
@@ -27,7 +28,7 @@ const DeleteDriver = () => {
                 alert('Invalid User ID');
                 return;
             }
-            await axios.delete(`/api/drivers/${userId}`);
+            await axiosInstance.delete(`/drivers/${userId}`);
             alert('Driver deleted successfully');
             setuserId('');
             setdriverDetails(null);
@@ -47,6 +48,9 @@ const DeleteDriver = () => {
                     minWidth: '300px', // Ensure a minimum width for smaller content
                 }}
             >
+                <div className="w-full max-w-7xl mb-4">
+                    <Breadcrumb />
+                </div>
                 <h1 className="text-3xl font-bold mb-4 text-orange-700">Delete Driver</h1>
                 <input
                     type="text"

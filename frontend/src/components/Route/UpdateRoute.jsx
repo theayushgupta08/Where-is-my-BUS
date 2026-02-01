@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../axiosInstance';
+import Breadcrumb from '../Breadcrumb';
 
 const UpdateRoute = () => {
     const [routeNumber, setRouteNumber] = useState('');
@@ -18,7 +19,7 @@ const UpdateRoute = () => {
 
     const handleUpdateRoute = async () => {
         try {
-            await axios.put(`/api/routes/${routeNumber}`, updatedRoute);
+            await axiosInstance.put(`/routes/${routeNumber}`, updatedRoute);
             alert('Route updated successfully');
             setUpdatedRoute({
                 routeStops: [],
@@ -35,6 +36,9 @@ const UpdateRoute = () => {
     return (
         <div className="flex justify-center items-center min-h-screen">
             <div className="p-6 flex flex-col justify-center items-center m-20 w-[70%] wave-group container">
+                <div className="w-full max-w-7xl mb-4">
+                    <Breadcrumb />
+                </div>
                 <h1 className="text-3xl font-bold mb-4 text-orange-700">Update Route</h1>
                 <input
                     type="text"

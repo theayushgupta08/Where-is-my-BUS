@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axiosInstance from '../../axiosInstance'; // Import the Axios instance
 import '../../index.css';
+import Breadcrumb from '../Breadcrumb';
 
 
 const AddBus = () => {
@@ -52,6 +53,9 @@ const AddBus = () => {
     return (
         <div className="flex justify-center items-center min-h-screen">
             <div className="p-6 flex flex-col justify-center items-center m-20 w-[70%] wave-group container">
+                <div className="w-full max-w-7xl mb-4">
+                    <Breadcrumb />
+                </div>
                 <h1 className="text-3xl font-bold mb-4 text-orange-700">Add Bus</h1>
                 <input
                     type="text"

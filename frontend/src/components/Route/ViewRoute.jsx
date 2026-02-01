@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../axiosInstance';
+import Breadcrumb from '../Breadcrumb';
 
 const ViewRoute = () => {
     const [routes, setRoutes] = useState([]);
@@ -10,7 +11,7 @@ const ViewRoute = () => {
 
     const fetchRoutes = async () => {
         try {
-            const response = await axios.get('/api/routes');
+            const response = await axiosInstance.get('/routes');
             setRoutes(response.data.routes); // Update to match backend response structure
         } catch (error) {
             console.error('Error fetching routes:', error);
@@ -19,6 +20,9 @@ const ViewRoute = () => {
 
     return (
         <div className="p-6 flex flex-col flex-wrap justify-center items-center m-20">
+            <div className="w-full max-w-7xl mb-4">
+                <Breadcrumb />
+            </div>
             <h1 className="text-3xl font-bold mb-4 text-orange-700">View Routes</h1>
             <table className="table-auto border-collapse border text-black border-gray-300 w-auto text-center">
                 <thead>

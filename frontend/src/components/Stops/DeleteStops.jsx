@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../axiosInstance';
+import Breadcrumb from '../Breadcrumb';
 
 const DeleteStops = () => {
     const [stopId, setstopId] = useState('');
@@ -8,7 +9,7 @@ const DeleteStops = () => {
 
     const handleFetchStopsDetails = async () => {
         try {
-            const response = await axios.get(`/api/stops/${stopId}`);
+            const response = await axiosInstance.get(`/stops/${stopId}`);
             setstopsDetails(response.data);
             setconfirmDelete(true);
         } catch (error) {
@@ -20,7 +21,7 @@ const DeleteStops = () => {
     const handleDeleteStops = async () => {
         try {
             // Send stopId in the request body
-            await axios.delete(`/api/stops/${stopId}`);
+            await axiosInstance.delete(`/stops/${stopId}`);
             alert('Stops deleted successfully');
             setstopId('');
             setstopsDetails(null);
@@ -38,6 +39,9 @@ const DeleteStops = () => {
                 width: 'auto', // Adjust width based on content
                 minWidth: '300px', // Ensure a minimum width for smaller content
             }}>
+                <div className="w-full max-w-7xl mb-4">
+                    <Breadcrumb />
+                </div>
                 <h1 className="text-3xl font-bold mb-4 text-orange-700">Delete Stops</h1>
                 <input
                     type="text"

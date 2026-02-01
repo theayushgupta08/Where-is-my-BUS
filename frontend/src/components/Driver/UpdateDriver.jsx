@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../axiosInstance';
+import Breadcrumb from '../Breadcrumb';
 
 const UpdateDriver = () => {
     const [userId, setUserId] = useState('');
@@ -24,7 +25,7 @@ const UpdateDriver = () => {
 
     const handleUpdateDriver = async () => {
         try {
-            await axios.post('/api/update-driver', { userId, ...updatedDriver });
+            await axiosInstance.post('/update-driver', { userId, ...updatedDriver });
             alert('Driver updated successfully');
             setUpdatedDriver({
                 password: '',
@@ -47,6 +48,9 @@ const UpdateDriver = () => {
     return (
         <div className="flex justify-center items-center min-h-screen m-14">
             <div className="p-6 flex flex-col justify-center items-center m-20 w-auto wave-group container">
+                <div className="w-full max-w-7xl mb-4">
+                    <Breadcrumb />
+                </div>
                 <h1 className="text-3xl font-bold mb-4 text-orange-700">Update Driver</h1>
                 <input
                     type="text"

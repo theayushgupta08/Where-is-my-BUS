@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../axiosInstance';
+import Breadcrumb from '../Breadcrumb';
 
 const UpdateBus = () => {
     const [busNumber, setbusNumber] = useState('');
@@ -20,7 +21,7 @@ const UpdateBus = () => {
 
     const handleUpdateBus = async () => {
         try {
-            await axios.put(`/api/buses/${busNumber}`, updatedBus);
+            await axiosInstance.put(`/buses/${busNumber}`, updatedBus);
             alert('Bus updated successfully');
             setUpdatedBus({
                 busNumber: '',
@@ -39,6 +40,9 @@ const UpdateBus = () => {
     return (
         <div className="flex justify-center items-center min-h-screen">
             <div className="p-6 flex flex-col justify-center items-center m-20 w-[70%] wave-group container">
+                <div className="w-full max-w-7xl mb-4">
+                    <Breadcrumb />
+                </div>
                 <h1 className="text-3xl font-bold mb-4 text-orange-700">Update Bus</h1>
 
                 <input

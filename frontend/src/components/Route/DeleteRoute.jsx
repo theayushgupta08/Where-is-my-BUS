@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../axiosInstance';
+import Breadcrumb from '../Breadcrumb';
 
 const DeleteRoute = () => {
 
@@ -10,7 +11,7 @@ const DeleteRoute = () => {
 
     const handleFetchRouteDetails = async () => {
         try {
-            const response = await axios.get(`/api/routes/${routeNumber}`);
+            const response = await axiosInstance.get(`/routes/${routeNumber}`);
             setrouteDetails(response.data);
             setconfirmDelete(true);
         } catch (error) {
@@ -22,7 +23,7 @@ const DeleteRoute = () => {
 
     const handleDeleteRoute = async () => {
         try {
-            await axios.delete(`/api/routes/${routeNumber}`);
+            await axiosInstance.delete(`/routes/${routeNumber}`);
             alert('Route deleted successfully');
             setrouteNumber('');
             setrouteDetails(null);
@@ -41,6 +42,9 @@ const DeleteRoute = () => {
                 width: 'auto', // Adjust width based on content
                 minWidth: '300px', // Ensure a minimum width for smaller content
             }}>
+                <div className="w-full max-w-7xl mb-4">
+                    <Breadcrumb />
+                </div>
                 <h1 className="text-3xl font-bold mb-4 text-orange-700">Delete Route</h1>
                 <input
                     type="text"

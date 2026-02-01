@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../axiosInstance';
+import Breadcrumb from '../Breadcrumb';
 
 const DeleteBus = () => {
     const [busNumber, setBusNumber] = useState('');
@@ -8,7 +9,7 @@ const DeleteBus = () => {
 
     const handleFetchBusDetails = async () => {
         try {
-            const response = await axios.get(`/api/buses/${busNumber}`);
+            const response = await axiosInstance.get(`/buses/${busNumber}`);
             setBusDetails(response.data.data);
             setConfirmDelete(true);
         } catch (error) {
@@ -19,7 +20,7 @@ const DeleteBus = () => {
 
     const handleDeleteBus = async () => {
         try {
-            await axios.delete(`/api/buses/${busNumber}`);
+            await axiosInstance.delete(`/buses/${busNumber}`);
             alert('Bus deleted successfully');
             setBusNumber('');
             setBusDetails(null);
@@ -36,6 +37,9 @@ const DeleteBus = () => {
                 width: 'auto', // Adjust width based on content
                 minWidth: '300px', // Ensure a minimum width for smaller content
             }}>
+                <div className="w-full max-w-7xl mb-4">
+                    <Breadcrumb />
+                </div>
                 <h1 className="text-3xl font-bold mb-4 text-orange-700">Delete Bus</h1>
                 <input
                     type="text"

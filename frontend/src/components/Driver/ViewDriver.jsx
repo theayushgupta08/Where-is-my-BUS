@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../axiosInstance';
+import Breadcrumb from '../Breadcrumb';
 
 const ViewDriver = () => {
     const [drivers, setDrivers] = useState([]);
@@ -10,7 +11,7 @@ const ViewDriver = () => {
 
     const fetchDrivers = async () => {
         try {
-            const response = await axios.get('/api/drivers');
+            const response = await axiosInstance.get('/drivers');
             setDrivers(response.data.data);
         } catch (error) {
             console.error('Error fetching drivers:', error);
@@ -19,6 +20,9 @@ const ViewDriver = () => {
 
     return (
         <div className="p-6 flex flex-col flex-wrap justify-center items-center m-20">
+            <div className="w-full max-w-7xl mb-4">
+                <Breadcrumb />
+            </div>
             <h1 className="text-3xl font-bold mb-4 text-orange-700">View Drivers</h1>
 
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../axiosInstance';
+import Breadcrumb from '../Breadcrumb';
 
 const ViewStops = () => {
     const [stops, setStops] = useState([]);
@@ -10,7 +11,7 @@ const ViewStops = () => {
 
     const fetchStops = async () => {
         try {
-            const response = await axios.get('/api/stops');
+            const response = await axiosInstance.get('/stops');
             setStops(response.data);
         } catch (error) {
             console.error('Error fetching stops:', error);
@@ -19,6 +20,9 @@ const ViewStops = () => {
 
     return (
         <div className="p-6 flex flex-col flex-wrap justify-center items-center m-20">
+            <div className="w-full max-w-7xl mb-4">
+                <Breadcrumb />
+            </div>
             <h1 className="text-3xl font-bold mb-4 text-orange-700">View Stops</h1>
 
 

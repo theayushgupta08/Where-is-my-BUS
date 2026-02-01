@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../axiosInstance';
+import Breadcrumb from '../Breadcrumb';
 
 const AddRoute = () => {
     const [newRoute, setNewRoute] = useState({
@@ -43,7 +44,7 @@ const AddRoute = () => {
     const validateStopsAndBuses = async () => {
         try {
             // Validate stops
-            const stopsResponse = await axios.post('/api/stops/validate', { stops: newRoute.stops });
+            const stopsResponse = await axiosInstance.post('/stops/validate', { stops: newRoute.stops });
             const { missingStops } = stopsResponse.data;
             if (missingStops && missingStops.length > 0) {
                 alert(`The following stop IDs are not present in the database: ${missingStops.join(', ')}`);
@@ -51,7 +52,7 @@ const AddRoute = () => {
             }
 
             // Validate buses
-            const busesResponse = await axios.post('/api/buses/validate', { buses: newRoute.buses });
+            const busesResponse = await axiosInstance.post('/buses/validate', { buses: newRoute.buses });
             const { missingBuses } = busesResponse.data;
             if (missingBuses && missingBuses.length > 0) {
                 alert(`The following bus numbers are not present in the database: ${missingBuses.join(', ')}`);
@@ -73,7 +74,7 @@ const AddRoute = () => {
             if (!isValid) return;
 
             console.log('Adding route:', newRoute);
-            const response = await axios.post('/api/routes', newRoute);
+            const response = await axiosInstance.post('/routes', newRoute);
             console.log('Received route:', response.data);
 
             if (response.status === 201) {
@@ -102,6 +103,9 @@ const AddRoute = () => {
     return (
         <div className="flex justify-center items-center min-h-screen">
             <div className="p-6 flex flex-col justify-center items-center m-20 w-[70%] wave-group container">
+                <div className="w-full max-w-7xl mb-4">
+                    <Breadcrumb />
+                </div>
                 <h1 className="text-3xl font-bold mb-4 text-orange-700">Add Route</h1>
                 <input
                     type="text"
