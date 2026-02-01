@@ -7,7 +7,7 @@ const cors = require('cors');
 require("dotenv").config();
 
 app.use(cors({
-  origin: 'http://localhost:5174', // Frontend URL
+  origin: 'https://where-is-my-bus-dodp.vercel.app/', // Frontend URL
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed methods
 }));
 
@@ -25,6 +25,7 @@ app.use("/api", routes);
 
 // Start the server
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  // console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running!`);
 });
 
