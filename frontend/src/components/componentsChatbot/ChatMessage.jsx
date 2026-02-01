@@ -1,6 +1,6 @@
 import ChatbotIcon from "./ChatbotIcon";
 
-const ChatMessage = ({ chat }) => {
+export default function ChatMessage({ chat }) {
     const isTyping = chat.text === "Typing...";
     
     return (
@@ -25,4 +25,3 @@ const ChatMessage = ({ chat }) => {
     );
 };
 
-export default ChatMessage;

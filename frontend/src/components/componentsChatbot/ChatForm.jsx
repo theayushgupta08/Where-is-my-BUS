@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 
-const ChatForm = ({ chatHistory, setChatHistory, generateBotResponse }) => {
+export default function ChatForm({ chatHistory, setChatHistory, generateBotResponse }) {
 
     const inputRef = useRef();
 
@@ -32,4 +32,3 @@ const ChatForm = ({ chatHistory, setChatHistory, generateBotResponse }) => {
     )
 }
 
-export default ChatForm;
