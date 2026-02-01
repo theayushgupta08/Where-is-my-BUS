@@ -12,7 +12,7 @@ export default defineConfig({
     proxy: {
       // Proxy API requests to your backend server
       '/api': {
-        target: 'https://where-is-my-bus-rosy.vercel.app/', // Backend server URL
+        target: 'https://where-is-my-bus-backend.vercel.app/', // Backend server URL
         changeOrigin: true,
         secure: false,
       },

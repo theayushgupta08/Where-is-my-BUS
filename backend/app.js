@@ -7,7 +7,7 @@ const cors = require('cors');
 require("dotenv").config();
 
 app.use(cors({
-  origin: 'https://where-is-my-bus-dodp.vercel.app/', // Frontend URL
+  origin: 'https://where-is-my-bus-frontend.vercel.app/', // Frontend URL
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed methods
 }));
 
