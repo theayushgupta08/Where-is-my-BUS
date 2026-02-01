@@ -1,5 +1,9 @@
-const BusTransport = require("../models/driver");
+// const BusTransport = require("../models/driver"); // Commented out - using static data
 const bcrypt = require("bcrypt");
+const { staticDrivers } = require("../data/staticData");
+
+// In-memory storage for drivers (simulating database)
+let drivers = [...staticDrivers];
 
 const busTransportController = {
   // Add new driver
@@ -42,7 +46,7 @@ const busTransportController = {
       }
 
       // Check existing user
-      const existingUser = await BusTransport.findOne({ userId });
+      const existingUser = drivers.find(d => d.userId === userId);
       if (existingUser) {
         return res.status(409).json({
           message: "User ID already exists",
@@ -50,9 +54,7 @@ const busTransportController = {
       }
 
       // Check existing license
-      const existingDriver = await BusTransport.findOne({
-        driverLicenceNumber,
-      });
+      const existingDriver = drivers.find(d => d.driverLicenceNumber === driverLicenceNumber);
       if (existingDriver) {
         return res.status(409).json({
           message: "Driver with this license number already exists",
@@ -63,7 +65,8 @@ const busTransportController = {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
 
-      const newTransport = new BusTransport({
+      const newTransport = {
+        _id: `driver${Date.now()}`,
         userId,
         password: hashedPassword,
         busNumber,
@@ -76,11 +79,13 @@ const busTransportController = {
         conductorContactNumber,
         conductorAddress,
         conductorDateOfBirth,
-      });
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
 
-      await newTransport.save();
+      drivers.push(newTransport);
 
-      const response = newTransport.toObject();
+      const response = { ...newTransport };
       delete response.password;
 
       res.status(201).json({
@@ -100,16 +105,18 @@ const busTransportController = {
   getDriverByUserId: async (req, res) => {
     try {
       const { userId } = req.params;
-      const driver = await BusTransport.findOne({ userId });
+      const driver = drivers.find(d => d.userId === userId);
       if (!driver) {
         return res.status(404).json({
           success: false,
           message: "Driver not found",
         });
       }
+      const driverResponse = { ...driver };
+      delete driverResponse.password;
       res.status(200).json({
         success: true,
-        data: driver,
+        data: driverResponse,
       });
     } catch (error) {
       res.status(500).json({
@@ -174,17 +181,15 @@ const busTransportController = {
     try {
       const { userId } = req.params;
 
-      const deletedTransport = await BusTransport.findOneAndDelete({
-        userId,
-      });
-
-      if (!deletedTransport) {
+      const driverIndex = drivers.findIndex(d => d.userId === userId);
+      if (driverIndex === -1) {
         return res.status(404).json({
           message: "Driver not found with this license number",
         });
       }
 
-      const response = deletedTransport.toObject();
+      const deletedTransport = drivers.splice(driverIndex, 1)[0];
+      const response = { ...deletedTransport };
       delete response.password;
 
       res.status(200).json({
@@ -203,10 +208,12 @@ const busTransportController = {
 
   viewAllDrivers: async (req, res) => {
     try {
-      const drivers = await BusTransport.find({}).select("-password");
+      const driversWithoutPassword = drivers.map(d => {
+        const { password, ...driverWithoutPassword } = d;
+        return driverWithoutPassword;
+      });
 
-
-      if (!drivers.length) {
+      if (!driversWithoutPassword.length) {
         return res.status(404).json({
           success: false,
           message: "No drivers found",
@@ -215,7 +222,7 @@ const busTransportController = {
 
       res.status(200).json({
         success: true,
-        data: drivers,
+        data: driversWithoutPassword,
       });
     } catch (error) {
       res.status(500).json({

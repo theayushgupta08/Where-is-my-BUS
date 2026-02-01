@@ -3,14 +3,19 @@ const express = require("express");
 const router = express.Router();
 
 
-const { adminAuth } = require("../controllers/admincontroller");
+const { adminAuth, userAuth, getUserProfile } = require("../controllers/admincontroller");
 const busTransportController = require("../controllers/driverController");
 const busController = require("../controllers/busController");
 const routeController = require("../controllers/routeController");
 const stopController = require("../controllers/stopController");
+const attendanceController = require("../controllers/attendanceController");
 
-// admin login 
+// User login (supports admin, driver, passenger)
+router.post("/login", userAuth);
+// admin login (backward compatibility)
 router.post("/admin", adminAuth);
+// Get user profile
+router.get("/profile/:username", getUserProfile);
 
 
 // Drivers
@@ -43,6 +48,11 @@ router.get("/routes/desired", routeController.showDesiredRoutes);
 // router.put("/routes/:routeNumber", routeController.updateRoute);
 router.delete("/routes/:routeNumber", routeController.deleteRoute);
 router.get('/routes/:routeNumber', routeController.getRouteByNumber);
+
+// Attendance
+router.get("/attendance/:driverUsername/students", attendanceController.getStudentsByDriver);
+router.get("/attendance/:driverUsername", attendanceController.getAttendance);
+router.post("/attendance/:driverUsername", attendanceController.markAttendance);
 
 
 module.exports = router;

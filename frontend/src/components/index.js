@@ -1,6 +1,9 @@
 // Navbar
 export { default as Navbar } from './Navbar';
 
+// Landing Page
+export { default as LandingPage } from './LandingPage';
+
 // Hero Page (Dashboard)
 export { default as Hero } from './Hero';
 

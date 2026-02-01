@@ -45,8 +45,8 @@ About the Team Members
 The project was developed by a dedicated team of engineers:
 
 1. Ayush Gupta:
- - Role: Frontend Developer
- - Responsibilities: Designed and implemented the user interface using React and Tailwind CSS.
+ - Role: Full-Stack Developer
+ - Responsibilities: Designed and implemented the user interface using React and Tailwind CSS, and backend APIs using Node.js and Express, and integrated MongoDB for data storage.
 
 2. Amitsingh Tanwar:
  - Role: Backend Developer

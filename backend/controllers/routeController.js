@@ -1,26 +1,31 @@
 // routeController.js
-const Route = require("../models/busRoute"); // Adjust the path as needed
-const Stop = require("../models/stop"); // Adjust the path as needed
-const Bus = require("../models/bus"); // Adjust the path as needed
+// const Route = require("../models/busRoute"); // Commented out - using static data
+// const Stop = require("../models/stop"); // Commented out - using static data
+// const Bus = require("../models/bus"); // Commented out - using static data
+const { staticRoutes, staticStops, staticBuses, findStopByStopId, findBusByBusNumber, populateStops, populateBuses } = require("../data/staticData");
+
+// In-memory storage for routes (simulating database)
+let routes = [...staticRoutes];
 // Add Route
 const addRoute = async (req, res) => {
-    const { routeNumber, stops, buses, totalJourneyTime, operatingDays } = req.body;
+    const { routeNumber, stops: stopIds, buses: busNumbers, totalJourneyTime, operatingDays } = req.body;
 
     try {
         // Check if the route already exists
-        const existingRoute = await Route.findOne({ routeNumber });
+        const existingRoute = routes.find(r => r.routeNumber === routeNumber);
         if (existingRoute) {
             return res.status(200).json({ message: "Route already exists" });
         }
 
-        // Check if all stops exist in the database
-        const existingStops = await Stop.find({ stopId: { $in: stops } }); // Get stops by stopId
-        const existingStopIds = existingStops.map((stop) => stop._id); // Get Object IDs of existing stops
+        // Check if all stops exist
+        const existingStops = stopIds
+            .map(stopId => staticStops.find(s => s.stopId === stopId))
+            .filter(Boolean);
+        const existingStopRefs = existingStops.map(stop => stop._id);
 
         // If any stop is not found, return an error
-        const missingStops = stops.filter(
-            (stop) =>
-                !existingStops.some((existingStop) => existingStop.stopId === stop)
+        const missingStops = stopIds.filter(
+            (stopId) => !staticStops.some((stop) => stop.stopId === stopId)
         );
         if (missingStops.length > 0) {
             return res
@@ -28,14 +33,15 @@ const addRoute = async (req, res) => {
                 .json({ message: "Stops do not exist", missingStops });
         }
 
-        // Check if all buses exist in the database
-        const existingBuses = await Bus.find({ busNumber: { $in: buses } }); // Get buses by busNumber
-        const existingBusIds = existingBuses.map((bus) => bus._id); // Get Object IDs of existing buses
+        // Check if all buses exist
+        const existingBuses = busNumbers
+            .map(busNumber => staticBuses.find(b => b.busNumber === busNumber))
+            .filter(Boolean);
+        const existingBusRefs = existingBuses.map(bus => bus._id);
 
         // If any bus is not found, return an error
-        const missingBuses = buses.filter(
-            (bus) =>
-                !existingBuses.some((existingBus) => existingBus.busNumber === bus)
+        const missingBuses = busNumbers.filter(
+            (busNumber) => !staticBuses.some((bus) => bus.busNumber === busNumber)
         );
 
         if (missingBuses.length > 0) {
@@ -44,17 +50,20 @@ const addRoute = async (req, res) => {
                 .json({ message: "Buses do not exist", missingBuses });
         }
 
-        // Create new route with existing stop IDs
-        const newRoute = new Route({
+        // Create new route
+        const newRoute = {
+            _id: `route${Date.now()}`,
             routeNumber,
-            stops: existingStopIds, // Use Object IDs for stops
-            buses: existingBusIds, // Use Object IDs for buses
+            stops: existingStopRefs,
+            buses: existingBusRefs,
             totalJourneyTime,
-            operatingDays
-        });
+            operatingDays,
+            isActive: true,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        };
 
-        // Save the route to the database
-        await newRoute.save();
+        routes.push(newRoute);
         res
             .status(201)
             .json({ message: "Route added successfully", route: newRoute });
@@ -73,14 +82,21 @@ const getRouteByNumber = async (req, res) => {
     try {
         const { routeNumber } = req.params;
 
-        // Find the stop by stopId
-        const route = await Route.findOne({ routeNumber });
+        // Find the route by routeNumber
+        const route = routes.find(r => r.routeNumber === routeNumber);
 
         if (!route) {
             return res.status(404).json({ message: "Route not found" });
         }
 
-        res.status(200).json(route);
+        // Populate stops and buses
+        const populatedRoute = {
+            ...route,
+            stops: populateStops(route.stops),
+            buses: populateBuses(route.buses),
+        };
+
+        res.status(200).json(populatedRoute);
     } catch (error) {
         console.error("Error fetching route:", error);
         res.status(500).json({ message: "Error fetching route", error: error.message });
@@ -90,17 +106,14 @@ const getRouteByNumber = async (req, res) => {
 // Show Routes
 const showAllRoutes = async (req, res) => {
     try {
-        // Get raw documents first to inspect them
-        const rawRoutes = await Route.find().lean();
-        console.log(
-            "Raw routes before population:",
-            JSON.stringify(rawRoutes, null, 2)
-        );
+        // Populate stops and buses for all routes
+        const populatedRoutes = routes.map(route => ({
+            ...route,
+            stops: populateStops(route.stops),
+            buses: populateBuses(route.buses),
+        }));
 
-        // Then try the population
-        const routes = await Route.find().populate("buses").populate("stops");
-
-        res.status(200).json({ routes });
+        res.status(200).json({ routes: populatedRoutes });
     } catch (error) {
         console.error("Error retrieving routes:", error);
         res.status(500).json({
@@ -115,11 +128,12 @@ const deleteRoute = async (req, res) => {
     const { routeNumber } = req.params;
 
     try {
-        const deletedRoute = await Route.findOneAndDelete({ routeNumber });
-
-        if (!deletedRoute) {
+        const routeIndex = routes.findIndex(r => r.routeNumber === routeNumber);
+        if (routeIndex === -1) {
             return res.status(404).json({ message: "Route not found" });
         }
+
+        const deletedRoute = routes.splice(routeIndex, 1)[0];
 
         res
             .status(200)
@@ -132,37 +146,47 @@ const deleteRoute = async (req, res) => {
     }
 };
 
-const mongoose = require("mongoose");
+// const mongoose = require("mongoose"); // Commented out - not needed with static data
 
 const showDesiredRoutes = async (req, res) => {
     try {
         const { startStopId, destinationStopId } = req.body;
 
-        // Convert stop IDs to ObjectId
-        const startId = new mongoose.Types.ObjectId(startStopId);
-        const destinationId = new mongoose.Types.ObjectId(destinationStopId);
+        // Find stops by stopId
+        const startStop = staticStops.find(s => s.stopId === startStopId);
+        const destStop = staticStops.find(s => s.stopId === destinationStopId);
+
+        if (!startStop || !destStop) {
+            return res.status(404).json({ message: "One or both stops not found" });
+        }
 
         // Find all routes that contain both start and destination stops
-        const routes = await Route.find({
-            stops: { $all: [startId, destinationId] },
-        })
-            .populate("stops")
-            .populate("buses");
+        const matchingRoutes = routes.filter((route) => {
+            const stopRefs = route.stops;
+            const startRef = startStop._id;
+            const destRef = destStop._id;
+            return stopRefs.includes(startRef) && stopRefs.includes(destRef);
+        });
 
-        if (!routes.length) {
+        if (!matchingRoutes.length) {
             return res
                 .status(404)
                 .json({ message: "No routes found with these stops" });
         }
 
-        // Filter routes where startStopId appears before destinationStopId
-        const validRoutes = routes.filter((route) => {
-            const stopIndexMap = route.stops.map((stop) => stop._id.toString());
-            return (
-                stopIndexMap.indexOf(startId.toString()) <
-                stopIndexMap.indexOf(destinationId.toString())
-            );
-        });
+        // Populate and filter routes where startStopId appears before destinationStopId
+        const validRoutes = matchingRoutes
+            .map(route => ({
+                ...route,
+                stops: populateStops(route.stops),
+                buses: populateBuses(route.buses),
+            }))
+            .filter((route) => {
+                const stopIndexMap = route.stops.map((stop) => stop._id);
+                const startIndex = stopIndexMap.indexOf(startStop._id);
+                const destIndex = stopIndexMap.indexOf(destStop._id);
+                return startIndex !== -1 && destIndex !== -1 && startIndex < destIndex;
+            });
 
         if (!validRoutes.length) {
             return res

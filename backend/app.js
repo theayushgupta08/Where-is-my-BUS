@@ -15,7 +15,7 @@ app.use(cors({
 
 // Middleware to parse JSON requests
 app.use(express.json());
-db();
+// db(); // DB connection commented out - using static data instead
 // Basic route
 app.get("/", (req, res) => {
   res.send("Hello, World!");

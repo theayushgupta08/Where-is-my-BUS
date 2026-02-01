@@ -15,8 +15,8 @@ import {
 
 export const teamMembers = [
     {
-        name: "Ayush Gupta",
-        role: "Frontend Developer",
+        name: "Ayush Gupta (Me)",
+        role: "Full-Stack Developer",
         image: ayush,
     },
     {
@@ -124,4 +124,3 @@ export const operations = [
         image: coverstops
     },
 ];
-

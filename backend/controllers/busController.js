@@ -1,14 +1,25 @@
-const Bus = require("../models/bus"); // Adjust the path as needed
+// const Bus = require("../models/bus"); // Commented out - using static data
+const { staticBuses, findStopByStopId } = require("../data/staticData");
+
+// In-memory storage for buses (simulating database)
+let buses = [...staticBuses];
 
 const busController = {
   // View all buses
   viewAllBuses: async (req, res) => {
     try {
-      const buses = await Bus.find()
-        .populate("sourceStop", "name")
-        .populate("destinationStop", "name");
+      // Populate sourceStop and destinationStop with stop names
+      const busesWithStopNames = buses.map(bus => {
+        const sourceStopObj = findStopByStopId(bus.sourceStop);
+        const destStopObj = findStopByStopId(bus.destinationStop);
+        return {
+          ...bus,
+          sourceStop: sourceStopObj ? { name: sourceStopObj.stopName } : bus.sourceStop,
+          destinationStop: destStopObj ? { name: destStopObj.stopName } : bus.destinationStop,
+        };
+      });
 
-      if (!buses.length) {
+      if (!busesWithStopNames.length) {
         return res.status(404).json({
           success: false,
           message: "No buses found",
@@ -17,7 +28,7 @@ const busController = {
 
       res.status(200).json({
         success: true,
-        data: buses,
+        data: busesWithStopNames,
       });
     } catch (error) {
       res.status(500).json({
@@ -32,7 +43,7 @@ const busController = {
   getBusByNumber: async (req, res) => {
     try {
       const { busNumber } = req.params;
-      const bus = await Bus.findOne({ busNumber });
+      const bus = buses.find(b => b.busNumber === busNumber);
       if (!bus) {
         return res.status(404).json({
           success: false,
@@ -66,7 +77,7 @@ const busController = {
       } = req.body;
 
       // Check if bus already exists
-      const existingBus = await Bus.findOne({ busNumber });
+      const existingBus = buses.find(b => b.busNumber === busNumber);
       if (existingBus) {
         return res.status(400).json({
           success: false,
@@ -74,7 +85,8 @@ const busController = {
         });
       }
 
-      const newBus = new Bus({
+      const newBus = {
+        _id: `bus${Date.now()}`,
         busNumber,
         busName,
         registrationNumber,
@@ -82,9 +94,12 @@ const busController = {
         destinationStop,
         sourceTime,
         destinationTime,
-      });
+        isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
 
-      await newBus.save();
+      buses.push(newBus);
 
       res.status(201).json({
         success: true,
@@ -144,14 +159,15 @@ const busController = {
     try {
       const { busNumber } = req.params;
 
-      const deletedBus = await Bus.findOneAndDelete({ busNumber });
-
-      if (!deletedBus) {
+      const busIndex = buses.findIndex(b => b.busNumber === busNumber);
+      if (busIndex === -1) {
         return res.status(404).json({
           success: false,
           message: "Bus not found",
         });
       }
+
+      const deletedBus = buses.splice(busIndex, 1)[0];
 
       res.status(200).json({
         success: true,
@@ -170,11 +186,10 @@ const busController = {
 
   validateBuses: async (req, res) => {
     try {
-      const { buses } = req.body;
-      const existingBuses = await Bus.find({ busNumber: { $in: buses } });
-      const existingBusNumbers = existingBuses.map(bus => bus.busNumber);
+      const { buses: requestedBuses } = req.body;
+      const existingBusNumbers = buses.map(bus => bus.busNumber);
 
-      const missingBuses = buses.filter(bus => !existingBusNumbers.includes(bus));
+      const missingBuses = requestedBuses.filter(bus => !existingBusNumbers.includes(bus));
 
       res.status(200).json({ missingBuses });
     } catch (error) {
