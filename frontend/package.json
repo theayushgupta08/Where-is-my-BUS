@@ -27,6 +27,7 @@
     "react-router-dom": "^7.1.1",
     "react-tilt": "^1.0.2",
     "react-toastify": "^11.0.2",
+    "three-mesh-bvh": "^0.8.0",
     "yup": "^1.6.1"
   },
   "devDependencies": {
