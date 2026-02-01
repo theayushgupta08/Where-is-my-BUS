@@ -1,5 +1,4 @@
-
-import ChatbotIcon from "./chatbotIcon";
+import ChatbotIcon from "./ChatbotIcon";
 
 const ChatMessage = ({ chat }) => {
     const isTyping = chat.text === "Typing...";
