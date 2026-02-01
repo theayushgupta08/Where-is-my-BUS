@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from "react";
-import ChatbotIcon from "./componentsChatbot/ChatbotIcon";
-import ChatForm from "./componentsChatbot/ChatForm";
-import ChatMessage from "./componentsChatbot/ChatMessage";
-import { mydata } from "./componentsChatbot/mydata";
+import ChatIcon from "./ChatIcon";
+import ChatForm from "./ChatForm";
+import ChatMessage from "./ChatMessage";
+import { mydata } from "./mydata";
 
 const Chatbot = () => {
 
@@ -59,7 +59,7 @@ const Chatbot = () => {
         {/* chatbot header  */}
         <div className="chat-header">
           <div className="header-info">
-            <ChatbotIcon />
+            <ChatIcon />
             <h2 className="logo-text">BusBuddy</h2>
           </div>
           <button onClick={() => setShowChatbot((prev) => !prev)} className="chatbot-btn material-symbols-rounded">keyboard_arrow_down</button>
@@ -68,7 +68,7 @@ const Chatbot = () => {
         {/* chatbot body  */}
         <div ref={chatBodyRef} className="chat-body">
           <div className="message bot-message">
-            <ChatbotIcon />
+            <ChatIcon />
             <p className="message-text">Hi there! I am BusBuddy. <br /> Nice to see you. What you want to know?</p>
           </div>
 

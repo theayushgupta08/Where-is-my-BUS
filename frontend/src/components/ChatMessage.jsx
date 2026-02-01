@@ -1,4 +1,4 @@
-import ChatbotIcon from "./ChatbotIcon";
+import ChatIcon from "./ChatIcon";
 
 export default function ChatMessage({ chat }) {
     const isTyping = chat.text === "Typing...";
@@ -8,7 +8,7 @@ export default function ChatMessage({ chat }) {
             <div className={`message ${chat.role === "model" ? "bot" : "user"}-message ${chat.isError ? "error" : ""}`}>
 
                 {/* Adding chatbot icon only if chat role is model */}
-                {chat.role === "model" && <ChatbotIcon />}
+                {chat.role === "model" && <ChatIcon />}
                 <p className={`message-text ${isTyping ? "typing-indicator" : ""}`}>
                     {isTyping ? (
                         <span className="typing-dots">
