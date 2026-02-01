@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from '../axiosInstance';
+import axiosInstance from '../../axiosInstance';
 
 const Attendance = () => {
     const [students, setStudents] = useState([]);
@@ -20,7 +20,7 @@ const Attendance = () => {
     const fetchStudents = async () => {
         try {
             setLoading(true);
-            const response = await axios.get(`/attendance/${driverUsername}/students`);
+            const response = await axiosInstance.get(`/attendance/${driverUsername}/students`);
             if (response.status === 200) {
                 setStudents(response.data.students || []);
                 // Initialize attendance state for all students
@@ -43,7 +43,7 @@ const Attendance = () => {
 
     const fetchAttendance = async () => {
         try {
-            const response = await axios.get(`/attendance/${driverUsername}?date=${selectedDate}`);
+            const response = await axiosInstance.get(`/attendance/${driverUsername}?date=${selectedDate}`);
             if (response.status === 200 && response.data.attendance) {
                 // Merge fetched attendance with current state
                 setAttendance(prev => {
@@ -78,7 +78,7 @@ const Attendance = () => {
         try {
             setSaving(true);
             setSaveMessage('');
-            const response = await axios.post(`/attendance/${driverUsername}`, {
+            const response = await axiosInstance.post(`/attendance/${driverUsername}`, {
                 date: selectedDate,
                 attendance: attendance
             });

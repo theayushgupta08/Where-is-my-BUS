@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from '../axiosInstance';
+import axiosInstance from '../../axiosInstance';
 import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
@@ -21,7 +21,7 @@ const Profile = () => {
     const fetchProfile = async () => {
         try {
             setLoading(true);
-            const response = await axios.get(`/profile/${username}`);
+            const response = await axiosInstance.get(`/profile/${username}`);
             if (response.status === 200) {
                 setProfile(response.data.profile);
                 setEditedProfile(response.data.profile);

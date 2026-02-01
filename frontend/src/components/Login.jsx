@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from '../axiosInstance';
+import axiosInstance from '../../axiosInstance';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
@@ -14,7 +14,7 @@ const Login = () => {
 
     const handleLogin = async () => {
         try {
-            const response = await axios.post('/login', credentials);
+            const response = await axiosInstance.post('/login', credentials);
             if (response.status === 200 && response.data.user) {
                 // Save authentication and role in localStorage
                 localStorage.setItem('isAuthenticated', 'true');
